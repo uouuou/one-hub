@@ -35,6 +35,8 @@ type Channel struct {
 	TestModel          string  `json:"test_model" form:"test_model" gorm:"type:varchar(50);default:''"`
 	OnlyChat           bool    `json:"only_chat" form:"only_chat" gorm:"default:false"`
 	PreCost            int     `json:"pre_cost" form:"pre_cost" gorm:"default:1"`
+	SystemPrompt       *string `json:"system_prompt" form:"system_prompt" gorm:"type:text"`
+	EnableSearch       bool    `json:"enable_search" gorm:"default:false"`
 
 	Plugin    *datatypes.JSONType[PluginType] `json:"plugin" form:"plugin" gorm:"type:json"`
 	DeletedAt gorm.DeletedAt                  `json:"-" gorm:"index"`

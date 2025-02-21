@@ -70,7 +70,9 @@ const getValidationSchema = (t) =>
       otherwise: Yup.string() // 在其他情况下，base_url 可以是任意字符串
     }),
     model_mapping: Yup.array(),
-    model_headers: Yup.array()
+    model_headers: Yup.array(),
+    system_prompt: Yup.string(),
+    enable_search: Yup.boolean()
   });
 
 const EditModal = ({ open, channelId, onCancel, onOk, groupOptions, isTag }) => {
@@ -798,6 +800,48 @@ const EditModal = ({ open, channelId, onCancel, onOk, groupOptions, isTag }) => 
                 ) : (
                   <FormHelperText id="helper-tex-channel-key-label"> {customizeT(inputPrompt.key)} </FormHelperText>
                 )}
+              </FormControl>
+
+              <FormControl fullWidth error={Boolean(touched.system_prompt && errors.system_prompt)} sx={{ ...theme.typography.otherInput }}>
+                <TextField
+                  multiline
+                  id="channel-system_prompt-label"
+                  label={customizeT(inputLabel.system_prompt)}
+                  value={values.system_prompt || ''}
+                  name="system_prompt"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  disabled={hasTag}
+                  minRows={3}
+                  aria-describedby="helper-text-channel-system_prompt-label"
+                />
+                {touched.system_prompt && errors.system_prompt ? (
+                  <FormHelperText error id="helper-tex-channel-system_prompt-label">
+                    {errors.system_prompt}
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText id="helper-tex-channel-system_prompt-label">
+                    {customizeT(inputPrompt.system_prompt)}
+                  </FormHelperText>
+                )}
+              </FormControl>
+
+              <FormControl fullWidth>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      disabled={hasTag}
+                      checked={values.enable_search === true}
+                      onClick={() => {
+                        setFieldValue('enable_search', !values.enable_search);
+                      }}
+                    />
+                  }
+                  label={customizeT(inputLabel.enable_search)}
+                />
+                <FormHelperText id="helper-tex-enable_search-label">
+                  {customizeT(inputPrompt.enable_search)}
+                </FormHelperText>
               </FormControl>
 
               {inputPrompt.model_mapping && (

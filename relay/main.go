@@ -2,6 +2,7 @@ package relay
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"one-api/common"
 	"one-api/common/config"
@@ -11,8 +12,6 @@ import (
 	"one-api/model"
 	"one-api/relay/relay_util"
 	"one-api/types"
-
-	"github.com/gin-gonic/gin"
 )
 
 func Relay(c *gin.Context) {
@@ -34,13 +33,22 @@ func Relay(c *gin.Context) {
 		return
 	}
 
+	channel := relay.getProvider().GetChannel()
+	// 获取用户设置的一些工具
+	if channel.EnableSearch || c.GetBool("enable_search") {
+		search(relay.getRequest().(*types.ChatCompletionRequest))
+	}
+	// 处理systemPrompt
+	if channel.SystemPrompt != nil && *channel.SystemPrompt != "" {
+		systemPrompt(channel.SystemPrompt, relay.getRequest().(*types.ChatCompletionRequest))
+	}
+
 	apiErr, done := RelayHandler(relay)
 	if apiErr == nil {
 		metrics.RecordProvider(c, 200)
 		return
 	}
 
-	channel := relay.getProvider().GetChannel()
 	go processChannelRelayError(c.Request.Context(), channel.Id, channel.Name, apiErr, channel.Type)
 
 	retryTimes := config.RetryTimes

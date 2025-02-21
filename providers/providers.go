@@ -41,7 +41,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 定义供应商工厂接口
+// ProviderFactory 定义供应商工厂接口
 type ProviderFactory interface {
 	Create(Channel *model.Channel) base.ProviderInterface
 }
@@ -88,7 +88,7 @@ func init() {
 	}
 }
 
-// 获取供应商
+// GetProvider 获取供应商
 func GetProvider(channel *model.Channel, c *gin.Context) base.ProviderInterface {
 	factory, ok := providerFactories[channel.Type]
 	var provider base.ProviderInterface

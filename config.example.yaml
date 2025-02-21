@@ -99,4 +99,11 @@ storage: # 存储设置 (可选,主要用于图片生成，有些供应商不提
 
 metrics:
   user: "" # metrics 用户名
-  password: "" # metrics 密码
+  password: "" # metrics 密码+
+
+search: # 搜索设置
+  searxng: "https://xx.xxx.xx" # searxng 地址
+  ai: #AI搜索配置信息
+    url: "https://api.openai.com/v1/chat/completions" # 请求地址
+    key: "your-openai-key" # 请求密钥
+    model: "gpt-3.5-turbo" # 模型名称

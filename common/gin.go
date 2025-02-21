@@ -3,6 +3,8 @@ package common
 import (
 	"bytes"
 	"fmt"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 	"io"
 	"one-api/common/logger"
 	"one-api/types"
@@ -21,6 +23,12 @@ func UnmarshalBodyReusable(c *gin.Context, v any) error {
 	if err != nil {
 		return err
 	}
+
+	// 兼容客户自己开启搜索引擎的模式
+	jsonData := gjson.ParseBytes(requestBody)
+	c.Set("enable_search", jsonData.Get("enable_search").Bool())
+	requestBody, _ = sjson.DeleteBytes(requestBody, "enable_search")
+
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 	err = c.ShouldBind(v)
 	if err != nil {

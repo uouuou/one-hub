@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// https://platform.openai.com/docs/api-reference/models/list
+// OpenAIModels https://platform.openai.com/docs/api-reference/models/list
 type OpenAIModels struct {
 	Id      string  `json:"id"`
 	Object  string  `json:"object"`
@@ -169,7 +169,7 @@ func getAvailableModels(groupName string) map[string]*AvailableModelResponse {
 	availableModels := make(map[string]*AvailableModelResponse, len(publicModels))
 
 	for modelName, group := range publicModels {
-		groups := []string{}
+		var groups []string
 		for _, publicGroup := range publicGroups {
 			if group[publicGroup] {
 				groups = append(groups, publicGroup)

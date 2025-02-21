@@ -13,6 +13,8 @@ const defaultConfig = {
     plugin: {},
     tag: '',
     only_chat: false,
+    system_prompt: '',
+    enable_search: false,
     pre_cost: 1
   },
   inputLabel: {
@@ -29,6 +31,8 @@ const defaultConfig = {
     only_chat: '仅支持聊天',
     tag: '标签',
     provider_models_list: '',
+    system_prompt: '系统提示词',
+    enable_search: '启用搜索',
     pre_cost: '预计费选项'
   },
   prompt: {
@@ -47,6 +51,8 @@ const defaultConfig = {
     only_chat: '如果选择了仅支持聊天，那么遇到有函数调用的请求会跳过该渠道',
     provider_models_list: '必须填写所有数据后才能获取模型列表',
     tag: '你可以为你的渠道打一个标签，打完标签后，可以通过标签进行批量管理渠道，注意：设置标签后某些设置只能通过渠道标签修改，无法在渠道列表中修改。',
+    system_prompt: '设置后，此渠道的所有对话请求都会自动添加此系统提示词，可用于设置模型行为',
+    enable_search: '启用后，此渠道的Chat对话将会被加入搜索功能',
     pre_cost:
       '这里选择预计费选项，用于预估费用，如果你觉得计算图片占用太多资源，可以选择关闭图片计费。但是请注意：有些渠道在stream下是不会返回tokens的，这会导致输入tokens计算错误。'
   },
