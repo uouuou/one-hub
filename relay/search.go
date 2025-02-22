@@ -42,7 +42,23 @@ func (r SearchRes) String() string {
 
 // search 处理搜索请求
 func search(request *types.ChatCompletionRequest) {
-	lastMessage := request.Messages[len(request.Messages)-1].Content.(string)
+	lastMessageContent := request.Messages[len(request.Messages)-1].Content
+	var lastMessage string
+	switch v := lastMessageContent.(type) {
+	case string:
+		lastMessage = v
+	case []interface{}:
+		// 将 []interface{} 转换为 JSON 字符串
+		jsonBytes, err := json.Marshal(v)
+		if err != nil {
+			logger.SysError("Failed to marshal []interface{}: " + err.Error())
+			lastMessage = ""
+		} else {
+			lastMessage = string(jsonBytes)
+		}
+	default:
+		lastMessage = fmt.Sprintf("%v", v)
+	}
 	// 提取搜索关键词
 	keywords, err := getSearchKeywords(lastMessage)
 	if keywords != "NO" && err == nil {
@@ -76,7 +92,7 @@ func getSearchKeywords(content string) (string, error) {
 		"messages": []map[string]string{
 			{
 				"role":    "system",
-				"content": fmt.Sprintf("CurrentTime:%v你是一个联网搜索机器人，你需要判断下面的对话是否需要使用搜索引擎。 如果需要，请使用工具进行搜索，如果不需要，请直接返回数字0", time.Now().Format("2006-01-02 15:04:05")),
+				"content": fmt.Sprintf("今天的时间是:%v你是一个联网搜索机器人，你需要判断下面的对话是否需要使用搜索引擎。 如果需要，请使用工具进行搜索，如果不需要，请直接返回数字0", time.Now().Format("2006-01-02 15:04:05")),
 			},
 			{
 				"role":    "user",
