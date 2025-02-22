@@ -53,6 +53,7 @@ var allowedChannelOrderFields = map[string]bool{
 	"response_time": true,
 	"balance":       true,
 	"priority":      true,
+	"weight":        true,
 }
 
 type SearchChannelsParams struct {
@@ -108,6 +109,11 @@ func GetChannelsList(params *SearchChannelsParams) (*DataResult[Channel], error)
 		db = db.Where("tag = ''")
 	}
 
+	// set default channel order
+	if params.Order == "" {
+		params.Order = "-priority,-weight,name"
+	}
+
 	return PaginateAndOrder(db, &params.PaginationParams, &channels, allowedChannelOrderFields)
 }
 
@@ -158,7 +164,7 @@ func BatchUpdateChannelsAzureApi(params *BatchChannelsParams) (int64, error) {
 	}
 
 	if db.RowsAffected > 0 {
-		go ChannelGroup.Load()
+		ChannelGroup.Load()
 	}
 	return db.RowsAffected, nil
 }
@@ -187,7 +193,7 @@ func BatchDelModelChannels(params *BatchChannelsParams) (int64, error) {
 	}
 
 	if count > 0 {
-		go ChannelGroup.Load()
+		ChannelGroup.Load()
 	}
 
 	return count, nil
@@ -228,7 +234,7 @@ func (channel *Channel) Update(overwrite bool) error {
 	err := channel.UpdateRaw(overwrite)
 
 	if err == nil {
-		go ChannelGroup.Load()
+		ChannelGroup.Load()
 	}
 
 	return err
