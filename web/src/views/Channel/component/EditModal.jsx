@@ -71,7 +71,6 @@ const getValidationSchema = (t) =>
     }),
     model_mapping: Yup.array(),
     model_headers: Yup.array(),
-    system_prompt: Yup.string(),
     enable_search: Yup.boolean()
   });
 
@@ -215,6 +214,9 @@ const EditModal = ({ open, channelId, onCancel, onOk, groupOptions, isTag }) => 
     }
     if (values.type === 18 && values.other === '') {
       values.other = 'v2.1';
+    }
+    if (values.system_prompt === '' || values.system_prompt === null || values.system_prompt === undefined) {
+      delete values.system_prompt;
     }
     let res;
 

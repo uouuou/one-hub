@@ -39,7 +39,7 @@ func Relay(c *gin.Context) {
 		search(relay.getRequest().(*types.ChatCompletionRequest))
 	}
 	// 处理systemPrompt
-	if channel.SystemPrompt != nil && *channel.SystemPrompt != "" {
+	if channel.SystemPrompt != "" {
 		systemPrompt(channel.SystemPrompt, relay.getRequest().(*types.ChatCompletionRequest))
 	}
 
