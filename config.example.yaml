@@ -103,6 +103,9 @@ metrics:
 
 search: # 搜索设置
   searxng: "https://xx.xxx.xx" # searxng 地址
+    url: "" # searxng 地址 关键词请用{query}， 例如 "http://127.0.0.1:8080/search?category_general=1&safesearch=2&q={query}&format=json&engines=bing,google"
+  tavily:
+    key: "" # tavily 密钥
   ai: #AI搜索配置信息
     url: "https://api.openai.com/v1/chat/completions" # 请求地址
     key: "your-openai-key" # 请求密钥
