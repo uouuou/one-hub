@@ -36,7 +36,7 @@ func Relay(c *gin.Context) {
 	channel := relay.getProvider().GetChannel()
 	// 获取用户设置的一些工具
 	if channel.EnableSearch || c.GetBool("enable_search") {
-		search(relay.getRequest().(*types.ChatCompletionRequest))
+		handleSearch(c, relay.getRequest().(*types.ChatCompletionRequest), true)
 	}
 	// 处理systemPrompt
 	if channel.SystemPrompt != "" {

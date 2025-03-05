@@ -32,14 +32,14 @@ if not exist %WEBDIR% (
 )
 
 cd %WEBDIR%
-pnpm install
+yarn install
 if errorlevel 1 (
     echo Failed to install yarn packages!
-    exit /b 1
+    exit /b 1ya
 )
 
 set VITE_APP_VERSION=%VERSION%
-call pnpm run build
+call yarn run build
 if errorlevel 1 (
     echo Failed to build web project!
     exit /b 1
