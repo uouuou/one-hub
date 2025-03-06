@@ -54,7 +54,7 @@ func init() {
 
 }
 
-// 记录 HTTP 请求
+// RecordHttp 记录 HTTP 请求
 func RecordHttp(c *gin.Context, duration time.Duration) {
 	go SafelyRecordMetric(func() {
 		statusCode := strconv.Itoa(c.Writer.Status())
@@ -73,7 +73,7 @@ func RecordHttp(c *gin.Context, duration time.Duration) {
 	})
 }
 
-// 记录渠道请求
+// RecordProvider 记录渠道请求
 func RecordProvider(c *gin.Context, statusCode int) {
 	model := c.GetString("original_model")
 
@@ -94,7 +94,7 @@ func RecordProvider(c *gin.Context, statusCode int) {
 	})
 }
 
-// 记录 panic
+// RecordPanic 记录 panic
 func RecordPanic(panicType string) {
 	panicCounter.WithLabelValues(panicType).Inc()
 }

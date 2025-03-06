@@ -33,10 +33,13 @@ func Relay(c *gin.Context) {
 		return
 	}
 
+	// 这里在setProvider的多次请求中没有去判定当前上下文是否存在第一次判定过的情况从而将数据写入异常的问题
+	BillingOriginalModel := c.GetBool("billing_original_model")
 	channel := relay.getProvider().GetChannel()
 	// 获取用户设置的一些工具
 	if channel.EnableSearch || c.GetBool("enable_search") {
 		handleSearch(c, relay.getRequest().(*types.ChatCompletionRequest), true)
+		c.Set("billing_original_model", BillingOriginalModel)
 	}
 	// 处理systemPrompt
 	if channel.SystemPrompt != "" {

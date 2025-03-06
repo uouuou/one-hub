@@ -32,10 +32,8 @@ if not exist %WEBDIR% (
 )
 
 cd %WEBDIR%
-yarn install
-if errorlevel 1 (
-    echo Failed to install yarn packages!
-    exit /b 1ya
+if not exist %WEBDIR%\build (
+    mkdir %WEBDIR%\build
 )
 
 set VITE_APP_VERSION=%VERSION%
