@@ -439,6 +439,8 @@
     "channelType": "供应商",
     "availableModels": "可用模型",
     "group": "分组",
+    "free": "免费",
+    "RPM": "API速率",
     "inputMultiplier": "输入价格",
     "outputMultiplier": "输出价格",
     "rate": "倍率",
@@ -930,6 +932,8 @@
     "check": "检测",
     "manual": "手动",
     "auto": "自动",
+    "key": "密钥",
+    "keyRequired": "请输入密钥",
     "testAllChannel": "已成功开始测试所有通道，请刷新页面查看结果。",
     "updateChannelBalance": "已更新完毕所有已启用通道余额！",
     "delChannelCount": "已删除所有禁用渠道，共计 {{count}} 个",
@@ -1015,7 +1019,11 @@
     "delTip": "确定删除?",
     "delInfoTip": "确定删除 {{name}} 吗？",
     "delGroup": "删除价格组",
-    "delGroupTip": "是否删除价格组？"
+    "delGroupTip": "是否删除价格组？",
+    "locked_title": "锁定价格",
+    "locked": "锁定价格",
+    "unlocked": "不锁定价格",
+    "lockedTip": "价格锁定后无法通过价格更新服务器和程序自带价格进行覆盖。如果您所配置的价格希望随程序或者价格服务器同步更新请勿锁定"
   },
   "redemption_edit": {
     "requiredQuota": "必须大于等于0",
