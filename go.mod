@@ -76,19 +76,15 @@ require (
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
-	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/magiconair/properties v1.8.10 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/prometheus/client_model v0.6.1 // indirect
+	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.63.0 // indirect
 	github.com/prometheus/procfs v0.16.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
-	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/smartwalle/ncrypto v1.0.4 // indirect
 	github.com/smartwalle/ngx v1.0.9 // indirect
 	github.com/smartwalle/nsign v1.0.9 // indirect
@@ -114,11 +110,10 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20250409194420-de1ac958c67a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250409194420-de1ac958c67a // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
-	gopkg.in/ini.v1 v1.67.0 // indirect
 )
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.31
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.32
 	github.com/bytedance/sonic v1.13.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

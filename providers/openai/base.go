@@ -128,9 +128,6 @@ func (p *OpenAIProvider) GetFullRequestURL(requestURL string, modelName string) 
 	if p.IsAzure {
 		apiVersion := p.Channel.Other
 		if modelName != "" {
-			// 检测模型是是否包含 . 如果有则直接去掉
-			modelName = strings.Replace(modelName, ".", "", -1)
-
 			if modelName == "dall-e-2" {
 				// 因为dall-e-3需要api-version=2023-12-01-preview，但是该版本
 				// 已经没有dall-e-2了，所以暂时写死
@@ -157,7 +154,6 @@ func (p *OpenAIProvider) GetFullRequestURL(requestURL string, modelName string) 
 			requestURL = strings.TrimPrefix(requestURL, "/v1")
 		}
 	}
-
 	return fmt.Sprintf("%s%s", baseURL, requestURL)
 }
 
