@@ -6,7 +6,6 @@ import (
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"one-api/common/logger"
 	"one-api/controller"
 	"one-api/middleware"
 	"strings"
@@ -19,12 +18,11 @@ func SetWebRouter(router *gin.Engine, buildFS embed.FS, indexPage []byte) {
 
 	// 特别处理favicon.ico请求
 	router.GET("/favicon.ico", controller.Favicon(buildFS))
-
-	embedFS, err := static.EmbedFolder(buildFS, "web/build")
+	folder, err := static.EmbedFolder(buildFS, "web/build")
 	if err != nil {
-		logger.FatalLog("failed to embed static files: " + err.Error())
+		return
 	}
-	router.Use(static.Serve("/", embedFS))
+	router.Use(static.Serve("/", folder))
 	router.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.RequestURI, "/v1") || strings.HasPrefix(c.Request.RequestURI, "/api") {
 			controller.RelayNotFound(c)
