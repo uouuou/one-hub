@@ -36,20 +36,9 @@ func Relay(c *gin.Context) {
 		return
 	}
 
-	var heartbeat *relay_util.Heartbeat
-	if relay.IsStream() {
-		if setting, exists := c.Get("token_setting"); exists {
-			if tokenSetting, ok := setting.(*model.TokenSetting); ok {
-				if tokenSetting.Heartbeat.Enabled {
-					heartbeat = relay_util.NewHeartbeat(relay_util.HeartbeatConfig{
-						TimeoutSeconds:  tokenSetting.Heartbeat.TimeoutSeconds,
-						IntervalSeconds: 5, // 5s 发送一次心跳
-					}, c)
-					heartbeat.Start()
-					defer heartbeat.Close()
-				}
-			}
-		}
+	heartbeat := relay.SetHeartbeat()
+	if heartbeat != nil {
+		defer heartbeat.Close()
 	}
 
 	// 这里在setProvider的多次请求中没有去判定当前上下文是否存在第一次判定过的情况从而将数据写入异常的问题
