@@ -68,7 +68,7 @@ const getValidationSchema = (t) =>
       otherwise: Yup.string() // 在其他情况下，base_url 可以是任意字符串
     }),
     model_mapping: Yup.array(),
-    enable_search: Yup.boolean()
+    enable_search: Yup.boolean(),
     model_headers: Yup.array(),
     custom_parameter: Yup.string().nullable()
   });
