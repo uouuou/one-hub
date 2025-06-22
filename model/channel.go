@@ -41,6 +41,7 @@ type Channel struct {
 	PreCost            int     `json:"pre_cost" form:"pre_cost" gorm:"default:1"`
 	SystemPrompt       string  `json:"system_prompt" form:"system_prompt" gorm:"type:text"`
 	EnableSearch       bool    `json:"enable_search" gorm:"default:false"`
+	CompatibleResponse bool    `json:"compatible_response" gorm:"default:false"`
 
 	DisabledStream *datatypes.JSONSlice[string] `json:"disabled_stream,omitempty" gorm:"type:json"`
 
