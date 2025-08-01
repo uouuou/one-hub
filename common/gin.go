@@ -6,6 +6,7 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 	"io"
+	"one-api/common/config"
 	"one-api/common/logger"
 	"one-api/types"
 	"strings"
@@ -29,6 +30,8 @@ func UnmarshalBodyReusable(c *gin.Context, v any) error {
 	c.Set("enable_search", jsonData.Get("enable_search").Bool())
 	requestBody, _ = sjson.DeleteBytes(requestBody, "enable_search")
 
+	c.Set(config.GinRequestBodyKey, requestBody)
+
 	c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 	err = c.ShouldBind(v)
 	if err != nil {
@@ -39,7 +42,7 @@ func UnmarshalBodyReusable(c *gin.Context, v any) error {
 		return err
 	}
 
-	c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
+	// c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 	return nil
 }
 
