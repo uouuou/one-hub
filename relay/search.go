@@ -3,13 +3,14 @@ package relay
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"one-api/common/search"
 	providersBase "one-api/providers/base"
 	"one-api/relay/relay_util"
 	"one-api/types"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 // 来自 https://github.com/deepseek-ai/DeepSeek-R1?tab=readme-ov-file#official-prompts

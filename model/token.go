@@ -3,7 +3,6 @@ package model
 import (
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"one-api/common"
 	"one-api/common/config"
 	"one-api/common/database"
@@ -11,6 +10,8 @@ import (
 	"one-api/common/redis"
 	"one-api/common/stmp"
 	"one-api/common/utils"
+
+	"gorm.io/gorm"
 )
 
 var (
@@ -63,6 +64,8 @@ func (token *Token) AfterCreate(tx *gorm.DB) (err error) {
 
 type TokenSetting struct {
 	Heartbeat HeartbeatSetting `json:"heartbeat,omitempty"`
+	Models    []string         `json:"models,omitempty"`
+	Subnet    string           `json:"subnet,omitempty"`
 }
 
 type HeartbeatSetting struct {

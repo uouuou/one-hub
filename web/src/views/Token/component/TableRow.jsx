@@ -16,7 +16,8 @@ import {
   Button,
   Tooltip,
   Stack,
-  ButtonGroup
+  ButtonGroup,
+  Chip
 } from '@mui/material';
 
 import TableSwitch from 'ui-component/Switch';
@@ -177,6 +178,31 @@ export default function TokensTableRow({ item, manageToken, handleOpenModal, set
         <TableCell>{item.name}</TableCell>
         <TableCell>
           <Label color={userGroup[item.group]?.color}>{userGroup[item.group]?.name || '跟随用户'}</Label>
+        </TableCell>
+
+        <TableCell>
+          {item.setting?.models && item.setting.models.length > 0 ? (
+            <Tooltip title={`${t('token_index.allowedModels')}${item.setting.models.join(', ')}`}>
+              <Chip
+                label={`${item.setting.models.length} ${t('token_index.modelCount')}`}
+                size="small"
+                color="primary"
+                variant="outlined"
+              />
+            </Tooltip>
+          ) : (
+            <Chip label={t('token_index.noModelRestriction')} size="small" color="default" variant="outlined" />
+          )}
+        </TableCell>
+
+        <TableCell>
+          {item.setting?.subnet ? (
+            <Tooltip title={`${t('token_index.ipRestriction')}: ${item.setting.subnet}`}>
+              <Chip label={t('token_index.ipRestricted')} size="small" color="warning" variant="outlined" />
+            </Tooltip>
+          ) : (
+            <Chip label={t('token_index.noIpRestriction')} size="small" color="default" variant="outlined" />
+          )}
         </TableCell>
 
         <TableCell>

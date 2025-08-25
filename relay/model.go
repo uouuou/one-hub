@@ -1,6 +1,7 @@
 package relay
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"one-api/common"
@@ -28,6 +29,41 @@ type OpenAIModels struct {
 }
 
 func ListModelsByToken(c *gin.Context) {
+	tokenId := c.GetInt("token_id")
+
+	// 如果没有tokenId（匿名访问），返回所有公共模型
+	if tokenId == 0 {
+		publicModels := model.ChannelGroup.GetModelsGroups()
+		var allModels []string
+		for modelName := range publicModels {
+			allModels = append(allModels, modelName)
+		}
+		sort.Strings(allModels)
+
+		var groupOpenAIModels []*OpenAIModels
+		for _, modelName := range allModels {
+			groupOpenAIModels = append(groupOpenAIModels, getOpenAIModelWithName(modelName))
+		}
+
+		// 根据 OwnedBy 排序
+		sort.Slice(groupOpenAIModels, func(i, j int) bool {
+			if groupOpenAIModels[i].OwnedBy == nil {
+				return true
+			}
+			if groupOpenAIModels[j].OwnedBy == nil {
+				return false
+			}
+			return *groupOpenAIModels[i].OwnedBy < *groupOpenAIModels[j].OwnedBy
+		})
+
+		c.JSON(200, gin.H{
+			"object": "list",
+			"data":   groupOpenAIModels,
+		})
+		return
+	}
+
+	// 有token，获取用户组并应用模型限制
 	groupName := c.GetString("token_group")
 	if groupName == "" {
 		groupName = c.GetString("group")
@@ -46,10 +82,37 @@ func ListModelsByToken(c *gin.Context) {
 		})
 		return
 	}
-	sort.Strings(models)
+
+	// 获取token设置，过滤models
+	tokenSetting := c.GetString("token_setting")
+	var filteredModels []string
+	if tokenSetting != "" {
+		var setting model.TokenSetting
+		if err := json.Unmarshal([]byte(tokenSetting), &setting); err == nil {
+			// 检查是否设置了models字段（即使是空数组）
+			if setting.Models != nil {
+				// 如果token设置了特定models，只返回这些models
+				for _, model := range models {
+					if contains(setting.Models, model) {
+						filteredModels = append(filteredModels, model)
+					}
+				}
+			} else {
+				// 未设置models字段，返回所有可用模型
+				filteredModels = models
+			}
+		} else {
+			// 解析失败，返回所有可用模型
+			filteredModels = models
+		}
+	} else {
+		// 没有token设置，返回所有可用模型
+		filteredModels = models
+	}
+	sort.Strings(filteredModels)
 
 	var groupOpenAIModels []*OpenAIModels
-	for _, modelName := range models {
+	for _, modelName := range filteredModels {
 		groupOpenAIModels = append(groupOpenAIModels, getOpenAIModelWithName(modelName))
 	}
 
@@ -72,6 +135,38 @@ func ListModelsByToken(c *gin.Context) {
 
 // https://generativelanguage.googleapis.com/v1beta/models?key=xxxxxxx
 func ListGeminiModelsByToken(c *gin.Context) {
+	tokenId := c.GetInt("token_id")
+
+	// 如果没有tokenId（匿名访问），返回所有公共模型
+	if tokenId == 0 {
+		publicModels := model.ChannelGroup.GetModelsGroups()
+		var allModels []string
+		for modelName := range publicModels {
+			allModels = append(allModels, modelName)
+		}
+		sort.Strings(allModels)
+
+		var geminiModels []gemini.ModelDetails
+		for _, modelName := range allModels {
+			price := model.PricingInstance.GetPrice(modelName)
+			if price.ChannelType == config.ChannelTypeGemini || price.ChannelType == config.ChannelTypeVertexAI {
+				geminiModels = append(geminiModels, gemini.ModelDetails{
+					Name:        fmt.Sprintf("models/%s", modelName),
+					DisplayName: cases.Title(language.Und).String(strings.ReplaceAll(modelName, "-", " ")),
+					SupportedGenerationMethods: []string{
+						"generateContent",
+					},
+				})
+			}
+		}
+
+		c.JSON(200, gemini.ModelListResponse{
+			Models: geminiModels,
+		})
+		return
+	}
+
+	// 有token，获取用户组并应用模型限制
 	groupName := c.GetString("token_group")
 	if groupName == "" {
 		groupName = c.GetString("group")
@@ -89,10 +184,37 @@ func ListGeminiModelsByToken(c *gin.Context) {
 		})
 		return
 	}
-	sort.Strings(models)
+
+	// 获取token设置，过滤models
+	tokenSetting := c.GetString("token_setting")
+	var filteredModels []string
+	if tokenSetting != "" {
+		var setting model.TokenSetting
+		if err := json.Unmarshal([]byte(tokenSetting), &setting); err == nil {
+			// 检查是否设置了models字段（即使是空数组）
+			if setting.Models != nil {
+				// 如果token设置了特定models，只返回这些models
+				for _, model := range models {
+					if contains(setting.Models, model) {
+						filteredModels = append(filteredModels, model)
+					}
+				}
+			} else {
+				// 未设置models字段，返回所有可用模型
+				filteredModels = models
+			}
+		} else {
+			// 解析失败，返回所有可用模型
+			filteredModels = models
+		}
+	} else {
+		// 没有token设置，返回所有可用模型
+		filteredModels = models
+	}
+	sort.Strings(filteredModels)
 
 	var geminiModels []gemini.ModelDetails
-	for _, modelName := range models {
+	for _, modelName := range filteredModels {
 		// Get the price to check if it's a Gemini model (channel_type=25)
 		price := model.PricingInstance.GetPrice(modelName)
 		if price.ChannelType == config.ChannelTypeGemini {
@@ -112,6 +234,35 @@ func ListGeminiModelsByToken(c *gin.Context) {
 }
 
 func ListClaudeModelsByToken(c *gin.Context) {
+	tokenId := c.GetInt("token_id")
+
+	// 如果没有tokenId（匿名访问），返回所有公共模型
+	if tokenId == 0 {
+		publicModels := model.ChannelGroup.GetModelsGroups()
+		var allModels []string
+		for modelName := range publicModels {
+			allModels = append(allModels, modelName)
+		}
+		sort.Strings(allModels)
+
+		var claudeModelsData []claude.Model
+		for _, modelName := range allModels {
+			price := model.PricingInstance.GetPrice(modelName)
+			if price.ChannelType == config.ChannelTypeAnthropic {
+				claudeModelsData = append(claudeModelsData, claude.Model{
+					ID:   modelName,
+					Type: "model",
+				})
+			}
+		}
+
+		c.JSON(200, claude.ModelListResponse{
+			Data: claudeModelsData,
+		})
+		return
+	}
+
+	// 有token，获取用户组并应用模型限制
 	groupName := c.GetString("token_group")
 	if groupName == "" {
 		groupName = c.GetString("group")
@@ -129,10 +280,37 @@ func ListClaudeModelsByToken(c *gin.Context) {
 		})
 		return
 	}
-	sort.Strings(models)
+
+	// 获取token设置，过滤models
+	tokenSetting := c.GetString("token_setting")
+	var filteredModels []string
+	if tokenSetting != "" {
+		var setting model.TokenSetting
+		if err := json.Unmarshal([]byte(tokenSetting), &setting); err == nil {
+			// 检查是否设置了models字段（即使是空数组）
+			if setting.Models != nil {
+				// 如果token设置了特定models，只返回这些models
+				for _, model := range models {
+					if contains(setting.Models, model) {
+						filteredModels = append(filteredModels, model)
+					}
+				}
+			} else {
+				// 未设置models字段，返回所有可用模型
+				filteredModels = models
+			}
+		} else {
+			// 解析失败，返回所有可用模型
+			filteredModels = models
+		}
+	} else {
+		// 没有token设置，返回所有可用模型
+		filteredModels = models
+	}
+	sort.Strings(filteredModels)
 
 	var claudeModelsData []claude.Model
-	for _, modelName := range models {
+	for _, modelName := range filteredModels {
 		// Get the price to check if it's a Gemini model (channel_type=25)
 		price := model.PricingInstance.GetPrice(modelName)
 		if price.ChannelType == config.ChannelTypeAnthropic {
@@ -280,4 +458,14 @@ func getAvailableModels(groupName string) map[string]*AvailableModelResponse {
 	}
 
 	return availableModels
+}
+
+// contains 检查字符串切片是否包含某个字符串
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }

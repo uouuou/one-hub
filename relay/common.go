@@ -66,6 +66,16 @@ func GetProvider(c *gin.Context, modelName string) (provider providersBase.Provi
 	c.Set("channel_id", channel.Id)
 	c.Set("channel_type", channel.Type)
 
+	// 检查token的模型限制
+	tokenId := c.GetInt("token_id")
+	if tokenId != 0 {
+		// 有token，验证模型是否在token的允许列表中
+		if !isModelAllowedForToken(c, modelName) {
+			fail = errors.New("model '" + modelName + "' is not allowed for this token")
+			return
+		}
+	}
+
 	provider = providers.GetProvider(channel, c)
 	if provider == nil {
 		fail = errors.New("channel not found")
@@ -90,6 +100,36 @@ func GetProvider(c *gin.Context, modelName string) (provider providersBase.Provi
 	c.Set("billing_original_model", BillingOriginalModel)
 
 	return
+}
+
+// isModelAllowedForToken 检查模型是否在token的允许列表中
+func isModelAllowedForToken(c *gin.Context, modelName string) bool {
+	tokenSetting := c.GetString("token_setting")
+	if tokenSetting == "" {
+		// 没有token设置，允许所有模型
+		return true
+	}
+
+	var setting model.TokenSetting
+	if err := json.Unmarshal([]byte(tokenSetting), &setting); err != nil {
+		// 解析失败，允许所有模型
+		return true
+	}
+
+	// 如果没有设置models字段，允许所有模型
+	if setting.Models == nil {
+		return true
+	}
+
+	// 检查模型是否在允许列表中
+	for _, allowedModel := range setting.Models {
+		if allowedModel == modelName {
+			return true
+		}
+	}
+
+	// 模型不在允许列表中
+	return false
 }
 
 func fetchChannel(c *gin.Context, modelName string) (channel *model.Channel, fail error) {
