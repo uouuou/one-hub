@@ -136,6 +136,7 @@ func tokenAuth(c *gin.Context, key string) {
 	c.Set("token_id", token.Id)
 	c.Set("token_name", token.Name)
 	c.Set("token_group", token.Group)
+	c.Set("token_backup_group", token.BackupGroup)
 	c.Set("token_setting", utils.GetPointer(token.Setting.Data()))
 	// 直接将设置数据序列化为JSON字符串传递
 	settingData := token.Setting.Data()

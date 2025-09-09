@@ -121,6 +121,16 @@ func AddToken(c *gin.Context) {
 			return
 		}
 	}
+	if token.BackupGroup != "" {
+		err = validateTokenGroup(token.BackupGroup, userId)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
+	}
 
 	setting := token.Setting.Data()
 	err = validateTokenSetting(&setting)
@@ -183,6 +193,7 @@ func AddToken(c *gin.Context) {
 		RemainQuota:    token.RemainQuota,
 		UnlimitedQuota: token.UnlimitedQuota,
 		Group:          token.Group,
+		BackupGroup:    token.BackupGroup,
 		Setting:        token.Setting,
 	}
 	err = cleanToken.Insert()
@@ -278,6 +289,16 @@ func UpdateToken(c *gin.Context) {
 			return
 		}
 	}
+	if cleanToken.BackupGroup != token.BackupGroup && token.BackupGroup != "" {
+		err = validateTokenGroup(token.BackupGroup, userId)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
+	}
 
 	// 验证models和subnet字段
 	if len(setting.Models) > 0 {
@@ -332,6 +353,7 @@ func UpdateToken(c *gin.Context) {
 		cleanToken.RemainQuota = token.RemainQuota
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
 		cleanToken.Group = token.Group
+		cleanToken.BackupGroup = token.BackupGroup
 		cleanToken.Setting = token.Setting
 	}
 	err = cleanToken.Update()
