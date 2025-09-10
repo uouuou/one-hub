@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"one-api/common"
 	"one-api/common/config"
@@ -139,39 +138,6 @@ func AddToken(c *gin.Context) {
 		return
 	}
 
-	// 验证models字段
-	if len(setting.Models) > 0 {
-		// 获取用户组可用的所有models
-		userGroup, err := model.CacheGetUserGroup(userId)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"message": "获取用户组信息失败",
-			})
-			return
-		}
-
-		availableModels, err := model.ChannelGroup.GetGroupModels(userGroup)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"message": "获取可用模型失败",
-			})
-			return
-		}
-
-		// 验证用户选择的models是否都在可用列表中
-		for _, model := range setting.Models {
-			if !contains(availableModels, model) {
-				c.JSON(http.StatusOK, gin.H{
-					"success": false,
-					"message": fmt.Sprintf("模型 %s 不在可用模型列表中", model),
-				})
-				return
-			}
-		}
-	}
-
 	// 验证subnet字段
 	if setting.Subnet != "" {
 		if !isValidSubnet(setting.Subnet) {
@@ -300,39 +266,6 @@ func UpdateToken(c *gin.Context) {
 		}
 	}
 
-	// 验证models和subnet字段
-	if len(setting.Models) > 0 {
-		// 获取用户组可用的所有models
-		userGroup, err := model.CacheGetUserGroup(userId)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"message": "获取用户组信息失败",
-			})
-			return
-		}
-
-		availableModels, err := model.ChannelGroup.GetGroupModels(userGroup)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"success": false,
-				"message": "获取可用模型失败",
-			})
-			return
-		}
-
-		// 验证用户选择的models是否都在可用列表中
-		for _, model := range setting.Models {
-			if !contains(availableModels, model) {
-				c.JSON(http.StatusOK, gin.H{
-					"success": false,
-					"message": fmt.Sprintf("模型 %s 不在可用模型列表中", model),
-				})
-				return
-			}
-		}
-	}
-
 	// 验证subnet字段
 	if setting.Subnet != "" {
 		if !isValidSubnet(setting.Subnet) {
@@ -455,23 +388,6 @@ func validateTokenSetting(setting *model.TokenSetting) error {
 	if setting.Heartbeat.Enabled {
 		if setting.Heartbeat.TimeoutSeconds < 30 || setting.Heartbeat.TimeoutSeconds > 90 {
 			return errors.New("heartbeat timeout seconds must be between 30 and 90")
-		}
-	}
-
-	// 验证models字段
-	if len(setting.Models) > 0 {
-		for _, model := range setting.Models {
-			if model == "" {
-				return errors.New("模型名称不能为空")
-			}
-		}
-		// 去重
-		uniqueModels := make(map[string]bool)
-		for _, model := range setting.Models {
-			if uniqueModels[model] {
-				return errors.New("模型列表中包含重复的模型")
-			}
-			uniqueModels[model] = true
 		}
 	}
 

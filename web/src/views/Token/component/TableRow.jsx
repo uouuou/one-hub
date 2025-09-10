@@ -181,10 +181,10 @@ export default function TokensTableRow({ item, manageToken, handleOpenModal, set
         </TableCell>
 
         <TableCell>
-          {item.setting?.models && item.setting.models.length > 0 ? (
-            <Tooltip title={`${t('token_index.allowedModels')}${item.setting.models.join(', ')}`}>
+          {item.setting?.limits?.enabled && item.setting.limits.models.length > 0 ? (
+            <Tooltip title={`${t('token_index.allowedModels')}${item.setting.limits.models}`}>
               <Chip
-                label={`${item.setting.models.length} ${t('token_index.modelCount')}`}
+                label={`${item.setting.limits.models.length} ${t('token_index.modelCount')}`}
                 size="small"
                 color="primary"
                 variant="outlined"

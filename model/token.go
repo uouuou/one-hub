@@ -66,6 +66,7 @@ func (token *Token) AfterCreate(tx *gorm.DB) (err error) {
 type TokenSetting struct {
 	Heartbeat HeartbeatSetting  `json:"heartbeat,omitempty"`
 	Limits    LimitModelSetting `json:"limits,omitempty"`
+	Subnet    string            `json:"subnet,omitempty"`
 }
 
 type HeartbeatSetting struct {
