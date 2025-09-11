@@ -1224,13 +1224,13 @@
     "ipRestrictionTip": "Set the IP address or subnet range that this token can access",
     "subnetPlaceholder": "e.g.: 192.168.1.100 or 192.168.1.0/24",
     "subnetHelperText": "Supports single IP address (e.g.: 192.168.1.100) or CIDR format subnet (e.g.: 192.168.1.0/24)",
-    "selectModels": "Select Models",
-    "selectModelsPlaceholder": "Select allowed models",
-    "noModelRestriction": "No Restriction",
     "noIpRestriction": "No Restriction",
-    "modelCount": "models",
     "ipRestricted": "IP Restricted",
-    "allowedModels": "Allowed models: "
+    "limits": "Limits",
+    "limits_info": "After setting, you can impose restrictions on the token.",
+    "limits_switch": "Enable Limits",
+    "limit_models": "Model Limits",
+    "limit_models_info": "Select the models that this token is allowed to use. If no models are selected, all models are permitted."
   },
   "topup": "Top-up",
   "topupCard": {
