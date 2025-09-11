@@ -303,6 +303,8 @@
     "noIpRestriction": "无限制",
     "modelCount": "个模型",
     "ipRestricted": "IP限制",
+    "noModelRestriction": "无限制",
+    "allowedModels": "允许使用的模型: ",
     "limits": "令牌限制",
     "limits_info": "设置后，可以对令牌进行限制",
     "limits_switch": "启用限制",
