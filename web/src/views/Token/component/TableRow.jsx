@@ -181,10 +181,10 @@ export default function TokensTableRow({ item, manageToken, handleOpenModal, set
         </TableCell>
 
         <TableCell>
-          {item.setting?.limits?.enabled && item.setting.limits.models.length > 0 ? (
-            <Tooltip title={`${t('token_index.allowedModels')}${item.setting.limits.models}`}>
+          {item.setting?.limits?.limit_model_setting?.enabled && item.setting.limits.limit_model_setting.models.length > 0 ? (
+            <Tooltip title={`${t('token_index.allowedModels')}${item.setting.limits.limit_model_setting.models}`}>
               <Chip
-                label={`${item.setting.limits.models.length} ${t('token_index.modelCount')}`}
+                label={`${item.setting.limits.limit_model_setting.models.length} ${t('token_index.modelCount')}`}
                 size="small"
                 color="primary"
                 variant="outlined"
@@ -196,8 +196,8 @@ export default function TokensTableRow({ item, manageToken, handleOpenModal, set
         </TableCell>
 
         <TableCell>
-          {item.setting?.subnet ? (
-            <Tooltip title={`${t('token_index.ipRestriction')}: ${item.setting.subnet}`}>
+          {item.setting?.limits?.limits_ip_setting?.enabled && item.setting.limits.limits_ip_setting.whitelist.length > 0 ? (
+            <Tooltip title={`${t('token_index.ipRestriction')}: ${item.setting.limits.limits_ip_setting.whitelist}`}>
               <Chip label={t('token_index.ipRestricted')} size="small" color="warning" variant="outlined" />
             </Tooltip>
           ) : (

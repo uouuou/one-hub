@@ -85,6 +85,8 @@ var need2Response = map[string]bool{
 	"o4-mini-deep-research-2025-06-26": true,
 	"o4-mini-deep-research":            true,
 	"codex-mini-latest":                true,
+	"gpt-5-codex":                      true,
+	"gpt-5-pro":                        true,
 }
 
 func (r *relayChat) send() (err *types.OpenAIErrorWithStatusCode, done bool) {

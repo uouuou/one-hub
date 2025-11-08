@@ -56,30 +56,6 @@ const validationSchema = Yup.object().shape({
         whitelist: Yup.array().of(Yup.string())
       })
     })
-  }),
-  subnet: Yup.string().test('is-valid-subnet', '无效的子网格式', function (value) {
-    if (!value || value === '') return true; // 允许为空
-    // 简单的IP地址或CIDR验证
-    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/;
-    if (!ipRegex.test(value)) return false;
-
-    // 验证IP地址范围
-    const ipPart = value.split('/')[0];
-    const parts = ipPart.split('.');
-    if (parts.length !== 4) return false;
-
-    for (let part of parts) {
-      const num = parseInt(part);
-      if (isNaN(num) || num < 0 || num > 255) return false;
-    }
-
-    // 如果有子网掩码，验证其范围
-    if (value.includes('/')) {
-      const mask = parseInt(value.split('/')[1]);
-      if (isNaN(mask) || mask < 0 || mask > 32) return false;
-    }
-
-    return true;
   })
 });
 
@@ -432,28 +408,6 @@ const EditModal = ({ open, tokenId, onCancel, onOk, userGroupOptions }) => {
                   </FormControl>
                 </Grid>
               </Grid>
-
-              {/*IP限制设置*/}
-              <Divider sx={{ margin: '16px 0px' }} />
-              <Typography variant="h4" sx={{ margin: '10px 0px' }}>
-                {t('token_index.ipRestriction')}
-              </Typography>
-
-              <FormControl fullWidth error={Boolean(touched.setting?.subnet && errors.setting?.subnet)}>
-                <InputLabel htmlFor="subnet-label">{t('token_index.ipRestriction')}</InputLabel>
-                <OutlinedInput
-                  id="subnet-label"
-                  label={t('token_index.ipRestriction')}
-                  type="text"
-                  value={values.setting?.subnet || ''}
-                  onChange={(e) => {
-                    setFieldValue('setting.subnet', e.target.value);
-                  }}
-                  placeholder={t('token_index.subnetPlaceholder')}
-                />
-                {touched.setting?.subnet && errors.setting?.subnet && <FormHelperText error>{errors.setting?.subnet}</FormHelperText>}
-                <FormHelperText>{t('token_index.subnetHelperText')}</FormHelperText>
-              </FormControl>
 
               {/*令牌限制设置*/}
               <Divider sx={{ margin: '16px 0px' }} />
