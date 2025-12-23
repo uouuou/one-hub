@@ -87,6 +87,11 @@ var need2Response = map[string]bool{
 	"codex-mini-latest":                true,
 	"gpt-5-codex":                      true,
 	"gpt-5-pro":                        true,
+	"gpt-5.1-codex":                    true,
+	"gpt-5.1-codex-max":                true,
+	"gpt-5.1-codex-mini":               true,
+	"gpt-5.2-codex":                    true,
+	"gpt-5.2-codex-max":                true,
 }
 
 func (r *relayChat) send() (err *types.OpenAIErrorWithStatusCode, done bool) {
